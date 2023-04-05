@@ -5,7 +5,7 @@ DESCRIPTION:
     Read and write commands to Melles Griot Nanomotion II motor controller
     
 """
-import serial as s
+import serial
 import time
 
 
@@ -13,7 +13,7 @@ class motor:   # create a motor class
          
     def comset(self,num): # set comport to different value
         self.COMport=str(num)
-        self.ser=s.Serial('COM'+self.COMport,baudrate=19200) 
+        self.ser=serial.Serial('COM'+self.COMport,baudrate=19200) 
         self.ser.timeout=0.5
         self.ser.close()
         print('COM port changed to '+str(num))
@@ -35,8 +35,8 @@ class motor:   # create a motor class
       cmd=command+motorvals+'\r\n'
       self.ser.write(cmd.encode())
       time.sleep(0.5)
-      cmdsent=self.ser.read_until(terminator='\r\n'.encode()).decode()[:-2:]
-      response=self.ser.read_until(terminator='\r\n'.encode()).decode()[:-2:]
+      cmdsent=self.ser.read_until(expected='\r\n'.encode()).decode()[:-2:]
+      response=self.ser.read_until(expected='\r\n'.encode()).decode()[:-2:]
       #the [:-2:] removes the last 2 indices of the string which includes the \r\n This is optimal value.
       self.ser.close()
       return cmdsent, response
